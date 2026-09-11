@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApplicationStatus {
+  ACTION_PENDING
+  WAITING
+  APPROVED
+  REJECTED
+}
+
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum DeadlineStatus {
+  CURRENT
+  COMPLETED
+}
+
+model User {
+  id_user String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name    String @db.VarChar(100)
+
+  applications Application[]
+}
+
+model Application {
+  id_application String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company        String            @db.VarChar(150)
+  role           String            @db.VarChar(150)
+  link           String?           @db.VarChar(255)
+  notes          String?           @db.VarChar(700)
+  status         ApplicationStatus @default(WAITING)
+  priority       Priority
+
+  id_user String @db.Uuid
+  user    User   @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+  deadlines Deadline[]
+  @@index([status])
+  @@index([priority])
+}
+
+model Deadline {
+  id_deadline    String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  what           String         @db.VarChar(100)
+  due_date       DateTime       @db.Date
+  status         DeadlineStatus @default(CURRENT)
+  completed_date DateTime?      @db.Date
+
+  id_application String      @db.Uuid
+  application    Application @relation(fields: [id_application], references: [id_application], onDelete: Cascade)
+}
