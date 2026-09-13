@@ -20,6 +20,13 @@ enum Priority {
   LOW
 }
 
+enum WorkMode {
+  REMOTE
+  ONSITE
+  HYBRID
+  NOT_INFORMED
+}
+
 enum DeadlineStatus {
   CURRENT
   COMPLETED
@@ -37,6 +44,7 @@ model Application {
   company        String            @db.VarChar(150)
   role           String            @db.VarChar(150)
   link           String?           @db.VarChar(255)
+  work_mode      WorkMode          @default(NOT_INFORMED)
   notes          String?           @db.VarChar(700)
   status         ApplicationStatus @default(WAITING)
   priority       Priority
@@ -46,6 +54,7 @@ model Application {
 
   deadlines Deadline[]
   @@index([status])
+  @@index([work_mode])
   @@index([priority])
 }
 
