@@ -44,7 +44,7 @@ model Application {
   company        String            @db.VarChar(150)
   role           String            @db.VarChar(150)
   link           String?           @db.VarChar(255)
-  work_mode      WorkMode          @default(NOT_INFORMED)
+  work_mode      WorkMode          
   notes          String?           @db.VarChar(700)
   status         ApplicationStatus @default(WAITING)
   priority       Priority
